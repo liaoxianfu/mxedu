@@ -1,10 +1,11 @@
-from datetime import datetime
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
 # Create your models here.
+from django.utils import timezone
+
+
 class UserProfile(AbstractUser):
     GENDER_CHOICES = (
         ('male', u'男'),
@@ -53,7 +54,7 @@ class EmailVerifyRecord(models.Model):
     email = models.EmailField(max_length=50, verbose_name=u"邮箱")
     send_type = models.CharField(choices=SEND_CHOICES, max_length=10,verbose_name=u'发送类型')
     # 这里的now得去掉(),不去掉会根据编译时间。而不是根据实例化时间。
-    send_time = models.DateTimeField(default=datetime.now,verbose_name=u'发送时间')
+    send_time = models.DateTimeField(default=timezone.now,verbose_name=u'发送时间')
 
     class Meta:
         verbose_name = "邮箱验证码"
@@ -73,7 +74,7 @@ class Banner(models.Model):
     url = models.URLField(max_length=200, verbose_name=u"访问地址")
     # 默认index很大靠后。想要靠前修改index值。
     index = models.IntegerField(default=100, verbose_name=u"顺序")
-    add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
+    add_time = models.DateTimeField(default=timezone.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"轮播图"

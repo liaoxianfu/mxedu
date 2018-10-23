@@ -1,7 +1,7 @@
-from datetime import datetime
+# from datetime import datetime
 
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 
@@ -9,7 +9,7 @@ class CityDict(models.Model):
     name = models.CharField(max_length=20, verbose_name=u"城市")
     # 城市描述：备用不一定展示出来
     desc = models.CharField(max_length=200, verbose_name=u"描述")
-    add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
+    add_time = models.DateTimeField(default=timezone.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"城市"
@@ -34,7 +34,7 @@ class CourseOrg(models.Model):
     # 一个城市可以有很多课程机构，通过将city设置外键，变成课程机构的一个字段
     # 可以让我们通过机构找到城市
     city = models.ForeignKey(CityDict, verbose_name=u"所在城市",on_delete=models.CASCADE)
-    add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
+    add_time = models.DateTimeField(default=timezone.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"课程机构"
@@ -54,7 +54,7 @@ class Teacher(models.Model):
     points = models.CharField(max_length=50, verbose_name=u"教学特点")
     click_nums = models.IntegerField(default=0, verbose_name=u"点击数")
     fav_nums = models.IntegerField(default=0, verbose_name=u"收藏数")
-    add_time = models.DateTimeField(default=datetime.now, verbose_name=u"添加时间")
+    add_time = models.DateTimeField(default=timezone.now, verbose_name=u"添加时间")
 
     class Meta:
         verbose_name = u"教师"
