@@ -24,7 +24,7 @@ class Course(models.Model):
     students = models.IntegerField(default=0, verbose_name=u"学习人数")
     fav_nums = models.IntegerField(default=0, verbose_name=u"收藏人数")
     image = models.ImageField(
-        upload_to="courses/%Y/%m/%d",
+        upload_to="resources/courses/%Y/%m/%d",
         verbose_name=u"封面图",
         max_length=100)
     # 保存点击量，点进页面就算
@@ -81,7 +81,7 @@ class CourseResource(models.Model):
     # 这里定义成文件类型的field，后台管理系统中会直接有上传的按钮。
     # FileField也是一个字符串类型，要指定最大长度。
     download = models.FileField(
-        upload_to="courses/resource/%Y/%m/%d",
+        upload_to="resources/courses/resource/%Y/%m/%d",
         verbose_name=u"资源文件",
         max_length=100)
     add_time = models.DateTimeField(default=timezone.now, verbose_name=u"添加时间")
