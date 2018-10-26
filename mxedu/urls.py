@@ -23,6 +23,6 @@ from users import views as user_views
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     path('', user_views.index_view),
-    path('login', user_views.user_login, name="login")
+    path('login', user_views.LoginView.as_view(), name="login")
 
 ]
