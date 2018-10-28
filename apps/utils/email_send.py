@@ -1,4 +1,6 @@
 # encoding: utf-8
+from django.template import loader
+
 __author__ = 'liaoxianfu'
 __date__ = '2018/10/28 9:39'
 
@@ -58,11 +60,18 @@ def random_str(str_len):
     return ran_str
 
 
-def send_register_email(email, send_type="register"):
+def send_email(email, send_type="register"):
+    """
+    发送Email邮件 并在数据库中保存相应的数据\n
+    :param email:
+    :param send_type:
+    :return:
+    """
     email_record = EmailVerifyRecord()
     code = random_str(str_len=16)
     email_record.code = code
     email_record.email = email
+    email_record.send_type = send_type
     email_record.save()
     # 定义邮件内容:
     email_title = ""
@@ -79,3 +88,16 @@ def send_register_email(email, send_type="register"):
             print("成功")
         else:
             print("失败")
+
+    elif send_type == "forget":
+        email_title = "找回密码链接"
+        email_body = "请点击下面的链接重置密码: http://127.0.0.1:8000/reset_pass/{0}/{1}".format(email, code)
+
+        send_status = email_send(mail_host=MAIL_HOST, mail_user=MAIL_USER, password=MAIL_PASS, sender=MAIL_USER,
+                                 receiver=email, subject=email_title, content=email_body)
+        if send_status:
+            print("成功")
+        else:
+            print("失败")
+    else:
+        pass

@@ -20,10 +20,11 @@ from users import views as user_views
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
-    path('', user_views.index_view),
+    path('', user_views.index_view,name="index"),
     path('login', user_views.LoginView.as_view(), name="login"),
     path('register', user_views.RegisterView.as_view(), name="register"),
     path("captcha/", include('captcha.urls')),
-    path("active/<email>/<code>",user_views.ActiveView.as_view(),name="active")
+    path("active/<email>/<code>",user_views.ActiveView.as_view(),name="active"),
+    path("forgetpwd",user_views.ForgetView.as_view(),name="forget"),
 
 ]

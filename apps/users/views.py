@@ -6,8 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.views import View
 
 from users.models import UserProfile, EmailVerifyRecord
-from utils.email_send import send_register_email
-from .forms import LoginForm, RegisterForm
+from utils.email_send import send_email
+from .forms import LoginForm, RegisterForm, ForgetForm
 
 
 class CustomBackend(ModelBackend):
@@ -97,7 +97,7 @@ class RegisterView(View):
             user_profile.password = make_password(pass_word)
             user_profile.is_active = False
             user_profile.save()
-            send_register_email(user_name, "register")
+            send_email(user_name, "register")
         return render(request, "login.html")
 
 
@@ -120,4 +120,20 @@ class ActiveView(View):
             print(e)
             return render(request, "register.html", {"msg": "您的激活链接无效"})
 
+
+class ForgetView(View):
+    """
+    忘记密码视图
+    """
+
+    def get(self, request):
+        forgetForm = ForgetForm()
+        return render(request, "forgetpwd.html", {"forget_form": forgetForm})
+
+    def post(self,request):
+        forgeForm = ForgetForm(request.POST)
+        if forgeForm.is_valid():
+            email = request.POST.get("email","")
+
+            send_email(email=email, send_type="forget")
 
