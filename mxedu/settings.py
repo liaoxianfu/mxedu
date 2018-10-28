@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'captcha',
     'users',
     'courses',
     'organization',
@@ -137,3 +138,17 @@ STATICFILES_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
 )
+
+EMAIL_HOST = "smtp.163.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "15236735895@163.com"
+EMAIL_HOST_PASSWORD = "liao1234"
+EMAIL_USE_TLS = False
+EMAIL_FROM = "15236735895@163.com"
+
+
+# 自定义的邮箱发送
+MAIL_HOST = "smtp.163.com"  # 设置服务器
+MAIL_USER = "15236735895@163.com"  # 用户名
+MAIL_PASS = "liao1234"  # 口令,QQ邮箱是输入授权码，在qq邮箱设置 里用验证过的手机发送短信获得，不含空格
+SENDER = '15236735895@163.com'

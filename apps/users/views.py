@@ -1,12 +1,13 @@
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-# from django.views.generic.base import View
 from django.views import View
 
-from users.models import UserProfile
-from .forms import LoginForm
+from users.models import UserProfile, EmailVerifyRecord
+from utils.email_send import send_register_email
+from .forms import LoginForm, RegisterForm
 
 
 class CustomBackend(ModelBackend):
@@ -75,3 +76,48 @@ class LoginView(View):
                 "login_form": form
             }
             return render(request, "login.html", context=context)
+
+
+class RegisterView(View):
+    def get(self, request):
+        register_form = RegisterForm()
+        return render(request, "register.html", {"register_form": register_form})
+
+    def post(self, request):
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            # # 这里注册时前端的name为email
+            user_name = request.POST.get("email", "")
+            if UserProfile.objects.filter(email=user_name):
+                return render(request, "register.html", {"register_form": register_form, "msg": "用户已经存在"})
+            pass_word = request.POST.get("password", "")
+            user_profile = UserProfile()
+            user_profile.username = user_name
+            user_profile.email = user_name
+            user_profile.password = make_password(pass_word)
+            user_profile.is_active = False
+            user_profile.save()
+            send_register_email(user_name, "register")
+        return render(request, "login.html")
+
+
+class ActiveView(View):
+    def get(self, request, email, code):
+        try:
+            active_filter = EmailVerifyRecord.objects.get(email=email, code=code)
+            if active_filter is not None:
+                try:
+                    user = UserProfile.objects.get(email=email)
+                    user.is_active = True
+                    user.save()
+                    EmailVerifyRecord.objects.get(email=email, code=code).delete()
+                    return render(request, "login.html")
+                except Exception as e:
+                    return render(request, "register.html", {"msg": "您的激活出现错误"})
+            else:
+                return render(request, "register.html", {"msg": "您的激活链接无效"})
+        except Exception as e:
+            print(e)
+            return render(request, "register.html", {"msg": "您的激活链接无效"})
+
+
